@@ -33,6 +33,10 @@ const allowedOrigins = new Set([
     "https://127.0.0.1:4173",
 ])
 
+const isLocalhostOrigin = (origin) => {
+    return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+}
+
 database.connect() ;
 
 // middleware
@@ -41,7 +45,7 @@ app.use(cookieParser())
 app.use(
     cors({
         origin : (origin, callback) => {
-            if (!origin || allowedOrigins.has(origin)) {
+            if (!origin || allowedOrigins.has(origin) || isLocalhostOrigin(origin)) {
                 return callback(null, true)
             }
 
