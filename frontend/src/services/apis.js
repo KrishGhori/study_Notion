@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:4000/api/v1"
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "https://study-notion-gules-five.vercel.app/api/v1"
 
 // AUTH ENDPOINTS
 export const endpoints = {
