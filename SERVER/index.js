@@ -18,24 +18,6 @@ const {cloudinaryConnect} = require("./config/coludinary")
 const fileuploader = require("express-fileupload")
 
 const PORT = process.env.PORT || 4000 ;
-const allowedOrigins = new Set([
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:4173",
-    "http://127.0.0.1:4173",
-    "https://localhost:5173",
-    "https://127.0.0.1:5173",
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
-    "https://localhost:4173",
-    "https://127.0.0.1:4173",
-])
-
-const isLocalhostOrigin = (origin) => {
-    return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
-}
 
 database.connect() ;
 
@@ -44,13 +26,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(
     cors({
-        origin : (origin, callback) => {
-            if (!origin || allowedOrigins.has(origin) || isLocalhostOrigin(origin)) {
-                return callback(null, true)
-            }
-
-            return callback(null, false)
-        },
+        origin : true,
         credentials : true
     })
 )
