@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body {
+    overflow-x: hidden;
+}
+
+.btn-hover-lift {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.btn-hover-lift::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 80%);
+    transform: translateX(-125%);
+    transition: transform 0.5s ease;
+}
+
+.btn-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    filter: brightness(1.04);
+}
+
+.btn-hover-lift:hover::before {
+    transform: translateX(125%);
+}
+
+.btn-hover-lift:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-hover-lift:focus-visible {
+    outline: 2px solid #f1f2ff;
+    outline-offset: 2px;
+}
+
+.nav-link-animated {
+    position: relative;
+    display: inline-block;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.nav-link-animated::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    background-color: #ffd60a;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+}
+
+.nav-link-animated:hover {
+    color: #ffd60a;
+    transform: translateY(-1px);
+}
+
+.nav-link-animated:hover::after {
+    transform: scaleX(1);
+}
+
+.nav-link-active::after {
+    transform: scaleX(1);
+}
+
+.homepage_bg{
+    background : url("../src/assets/Images/bghome.svg");
+}
+
+@layer components {
+    .lable-style {
+        @apply text-sm text-richblack-5;
+    }
+
+    .form-style {
+        @apply w-full rounded-lg border border-richblack-600 bg-richblack-700 px-3 py-2 text-richblack-5 shadow-[0_1px_0_0] shadow-white/10 outline-none transition-all duration-200 placeholder:text-richblack-400 focus:border-yellow-50;
+    }
+
+    select.form-style option {
+        color: #000814;
+        background-color: #F1F2FF;
+    }
+}
