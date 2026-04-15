@@ -1,4 +1,30 @@
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "https://study-notion-gules-five.vercel.app/api/v1"
+const resolveBaseUrl = (baseUrl) => {
+  const trimmedBaseUrl = baseUrl.trim()
+  const normalizedBaseUrl = trimmedBaseUrl.endsWith("/")
+    ? trimmedBaseUrl.slice(0, -1)
+    : trimmedBaseUrl
+
+  if (normalizedBaseUrl.endsWith("/api/v1")) {
+    return normalizedBaseUrl
+  }
+
+  if (normalizedBaseUrl.endsWith("/api")) {
+    return `${normalizedBaseUrl}/v1`
+  }
+
+  if (
+    normalizedBaseUrl.startsWith("http://") ||
+    normalizedBaseUrl.startsWith("https://")
+  ) {
+    return `${normalizedBaseUrl}/api/v1`
+  }
+
+  return normalizedBaseUrl
+}
+
+const BASE_URL = resolveBaseUrl(
+  import.meta.env.VITE_APP_BASE_URL || "https://study-notion-gules-five.vercel.app/api/v1"
+)
 
 // AUTH ENDPOINTS
 export const endpoints = {
