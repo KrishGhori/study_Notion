@@ -264,7 +264,10 @@ const Catalog = () => {
     if (loading || !categoryResolved || (categoryId && !resolvedCatalogData)) {
         return (
           <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
-            <div className="spinner"></div>
+            <div className="flex flex-col items-center gap-4">
+              <div className="spinner"></div>
+              <span className="text-richblack-300 text-lg">Loading categories...</span>
+            </div>
           </div>
         )
       }
