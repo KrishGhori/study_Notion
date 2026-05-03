@@ -20,11 +20,18 @@ export default function EditProfile() {
   } = useForm()
 
   const submitProfileForm = async (data) => {
-    // console.log("Form Data - ", data)
     try {
-      dispatch(updateProfile(token, data))
+      const result = await dispatch(updateProfile(token, data));
+      // If using redux-thunk, unwrap result
+      if (result && result.payload) {
+        if (result.payload === true) {
+          navigate("/dashboard/my-profile");
+        }
+      } else if (result === true) {
+        navigate("/dashboard/my-profile");
+      }
     } catch (error) {
-      console.log("ERROR MESSAGE - ", error.message)
+      console.log("ERROR MESSAGE - ", error.message);
     }
   }
   return (

@@ -51,9 +51,9 @@ exports.updateProfile = async (req,res) =>{
     await profileDetails.save()
 
     return res.json({
-        success : true ,
-        messsage : "profile details update successfully" ,
-        profileDetails
+      success : true ,
+      messsage : "profile details update successfully" ,
+      updatedUserDetails: profileDetails
     })
         
     } catch(error){
