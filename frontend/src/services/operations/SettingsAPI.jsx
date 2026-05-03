@@ -122,12 +122,21 @@ export async function changePassword(token, formData) {
     if (!response.data.success) {
       throw new Error(response.data.message)
     }
+    toast.dismiss(toastId)
     toast.success("Password Changed Successfully")
+    toast.success("Confirmation email sent to your registered email address", {
+      duration: 4000,
+    })
+    return true
   } catch (error) {
     console.log("CHANGE_PASSWORD_API API ERROR............", error)
-    toast.error(error.response.data.message)
+    const errorMessage =
+      error?.response?.data?.message || error?.message || "Could not change password"
+    toast.error(errorMessage)
+    return false
+  } finally {
+    toast.dismiss(toastId)
   }
-  toast.dismiss(toastId)
 }
 
 export function deleteProfile(token, navigate) {

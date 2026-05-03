@@ -1,5 +1,22 @@
 import {createSlice} from "@reduxjs/toolkit"
 
+const normalizeUser = (user) => {
+    if (!user) {
+        return null;
+    }
+
+    const firstName = user.firstName || user.firstname || "";
+    const lastName = user.lastName || user.lastname || "";
+
+    return {
+        ...user,
+        firstName,
+        lastName,
+        firstname: firstName,
+        lastname: lastName,
+    };
+};
+
 const getStoredUser = () => {
     const storedUser = localStorage.getItem("user");
 
@@ -15,7 +32,7 @@ const getStoredUser = () => {
 };
 
 const initialState = {
-    user: getStoredUser(),
+    user: normalizeUser(getStoredUser()),
     loading: false,
 };
 
@@ -24,7 +41,7 @@ const profileSlice = createSlice({
     initialState: initialState,
     reducers: {
         setUser(state, value) {
-            state.user = value.payload;
+            state.user = normalizeUser(value.payload);
         },
         setLoading(state, value) {
             state.loading = value.payload;

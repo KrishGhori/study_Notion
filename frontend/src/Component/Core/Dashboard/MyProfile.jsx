@@ -13,11 +13,13 @@ import { useNavigate } from "react-router-dom"
 import { formattedDate } from "../../../utils/dateFormatter"
 import IconBtn from "../../common/IconBtn"
 
-const InfoTile = ({ icon: Icon, label, value, muted = false }) => {
+const InfoTile = ({ icon, label, value, muted = false }) => {
+  const TileIcon = icon
+
   return (
     <div className="rounded-2xl border border-richblack-700 bg-richblack-900/60 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.24)] backdrop-blur-sm">
       <div className="mb-3 flex items-center gap-2 text-richblack-400">
-        <Icon className="text-lg text-yellow-50" />
+        <TileIcon className="text-lg text-yellow-50" />
         <p className="text-xs font-semibold uppercase tracking-[0.24em]">{label}</p>
       </div>
       <p
@@ -35,7 +37,9 @@ export default function MyProfile() {
   const { user } = useSelector((state) => state.profile)
   const navigate = useNavigate()
 
-  const fullName = `${user?.firstName || "Your"} ${user?.lastName || "Profile"}`
+  const firstName = user?.firstName || user?.firstname || ""
+  const lastName = user?.lastName || user?.lastname || ""
+  const fullName = `${firstName || "Your"} ${lastName || "Profile"}`
   const accountType = user?.accountType || "Learner"
   const aboutText = user?.additionalDetails?.about
   const displayDate = formattedDate(user?.additionalDetails?.dateOfBirth)
@@ -62,7 +66,7 @@ export default function MyProfile() {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-yellow-50 via-yellow-100 to-pink-400 blur-md opacity-30" />
               <img
                 src={user?.image}
-                alt={`profile-${user?.firstName}`}
+                alt={`profile-${firstName}`}
                 className="relative aspect-square h-28 w-28 rounded-full border-4 border-richblack-700 object-cover shadow-[0_18px_60px_rgba(0,0,0,0.35)] sm:h-32 sm:w-32"
               />
             </div>
@@ -182,8 +186,8 @@ export default function MyProfile() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <InfoTile icon={RiUser3Line} label="First Name" value={user?.firstName ?? "Add first name"} muted={!user?.firstName} />
-            <InfoTile icon={RiUser3Line} label="Last Name" value={user?.lastName ?? "Add last name"} muted={!user?.lastName} />
+            <InfoTile icon={RiUser3Line} label="First Name" value={firstName || "Add first name"} muted={!firstName} />
+            <InfoTile icon={RiUser3Line} label="Last Name" value={lastName || "Add last name"} muted={!lastName} />
             <InfoTile icon={RiMailLine} label="Email" value={user?.email ?? "Add email"} muted={!user?.email} />
             <InfoTile icon={RiPhoneLine} label="Phone Number" value={user?.additionalDetails?.contactNumber ?? "Add contact number"} muted={!user?.additionalDetails?.contactNumber} />
             <InfoTile icon={RiShieldStarLine} label="Gender" value={user?.additionalDetails?.gender ?? "Add gender"} muted={!user?.additionalDetails?.gender} />

@@ -4,6 +4,7 @@ const otpgenerate = require("otp-generator");
 const Profile = require("../models/Profile")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const mailSender = require("../utils/mailSender")
 require("dotenv").config();
 
 // sendotp
@@ -43,6 +44,9 @@ exports.sendOTP = async (req,res)=>{
         });
         result = await OTP.findOne({ otp })
         }
+
+        // Keep only one active OTP per email so users cannot submit an older code
+        await OTP.deleteMany({ email: normalizedEmail });
 
         const otpPayload = { email: normalizedEmail , otp }
 
@@ -103,12 +107,15 @@ exports.signUp = async (req,res)=>{
         }) ;
     }
 
-    // find recent otp for the user
+    const receivedOtp = String(otp || "").trim();
+    const normalizedReceivedOtp = receivedOtp.replace(/\D/g, "");
+
+    // Find the latest OTP for the email and compare after normalizing to digits only
     const recentotp = await OTP.findOne({ email: normalizedEmail }).sort({ createdAt: -1 });
     
-    console.log("email" , normalizedEmail) ;
-    console.log("OTP from request:", otp, "Type:", typeof otp);
-    console.log("recentotp from DB:", recentotp)
+    console.log("email", normalizedEmail);
+    console.log("OTP from request:", receivedOtp, "Normalized:", normalizedReceivedOtp, "Type:", typeof receivedOtp);
+    console.log("recentotp from DB:", recentotp);
 
     // Validate OTP
     if(!recentotp){
@@ -118,24 +125,22 @@ exports.signUp = async (req,res)=>{
             message : "OTP expired. Please request a new one."
         }) ;
     }
-    
-    // Normalize both OTPs to strings for comparison
-    const receivedOtp = String(otp || "").trim();
+
     const storedOtp = String(recentotp.otp || "").trim();
-    
-    console.log("OTP verification - Received:", receivedOtp, "Stored:", storedOtp);
-    console.log("OTP match:", receivedOtp === storedOtp);
-    
-    if(receivedOtp !== storedOtp) {
-        // Invalid OTP
-        console.log("OTP mismatch - Expected:", storedOtp, "Got:", receivedOtp);
+    const normalizedStoredOtp = storedOtp.replace(/\D/g, "");
+
+    console.log("OTP verification - Received:", normalizedReceivedOtp, "Stored:", normalizedStoredOtp);
+    console.log("OTP verification - Lengths:", normalizedReceivedOtp.length, normalizedStoredOtp.length);
+    console.log("OTP match:", normalizedReceivedOtp === normalizedStoredOtp);
+
+    if(normalizedReceivedOtp !== normalizedStoredOtp) {
+        console.log("OTP mismatch - Expected:", normalizedStoredOtp, "Got:", normalizedReceivedOtp);
         return res.status(400).json({
             success : false ,
             message : "Invalid OTP. Please check and try again."
         })
     }
     console.log("OTP verified successfully for email:", normalizedEmail);
-
     // Hash password
     const hashPassword = await bcrypt.hash(password , 10); 
 
@@ -293,26 +298,72 @@ exports.changePassword = async (req,res) => {
         }
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-         await User.findByIdAndUpdate(
+         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { password: hashedPassword },
             { new: true }
         );
 
+        // Send password change confirmation email
         try {
+            const emailTemplate = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+                        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                        h1 { color: #1f2937; margin-bottom: 10px; }
+                        .content { color: #4b5563; line-height: 1.6; }
+                        .message { background-color: #f0f9ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 15px 0; }
+                        .footer { color: #9ca3af; font-size: 12px; margin-top: 20px; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h1>Password Changed Successfully ✓</h1>
+                        <div class="content">
+                            <p>Hello <strong>${updatedUser.firstname} ${updatedUser.lastname}</strong>,</p>
+                            <p>Your password for StudyNotion has been successfully changed.</p>
+                            
+                            <div class="message">
+                                <p><strong>⚠️ Important Security Note:</strong></p>
+                                <p>If you did not request this change or do not recognize this activity, please contact our support team immediately at support@studynotion.com</p>
+                            </div>
+                            
+                            <p><strong>What's next?</strong></p>
+                            <ul>
+                                <li>Log in with your new password</li>
+                                <li>Make sure to keep your password secure and unique</li>
+                                <li>Never share your password with anyone</li>
+                            </ul>
+                            
+                            <p>Best regards,<br/><strong>StudyNotion Team</strong></p>
+                        </div>
+                        <div class="footer">
+                            <p>This is an automated email. Please do not reply to this message.</p>
+                            <p>&copy; 2026 StudyNotion. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            console.log("📧 Sending password change email to:", updatedUser.email);
             await mailSender(
                 updatedUser.email,
-                "Password Updated",
-                "Your password has been changed successfully."
+                "Password Changed Successfully - StudyNotion",
+                emailTemplate
             );
+            console.log("✅ Password change email sent successfully");
         } catch (emailError) {
-            console.warn("⚠️ Password changed but email notification failed:", emailError.message);
-            // Continue - password was updated successfully
+            console.error("⚠️ Password changed but email notification failed:", emailError.message);
+            // Continue - password was updated successfully even if email fails
         }
 
         return res.status(200).json({
             success: true,
-            message: "Password updated successfully"
+            message: "Password updated successfully. Please check your email for confirmation."
         });
 
     } catch(error){
@@ -322,3 +373,5 @@ exports.changePassword = async (req,res) => {
     });
     }
 }
+
+

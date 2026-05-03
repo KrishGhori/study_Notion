@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 export default function Instructor() {
   const { token } = useSelector((state) => state.auth)
   const { user } = useSelector((state) => state.profile)
+  const firstName = user?.firstName || user?.firstname || "Instructor"
   const [loading, setLoading] = useState(false)
   const [instructorData, setInstructorData] = useState(null)
   const [courses, setCourses] = useState([])
@@ -40,7 +41,7 @@ export default function Instructor() {
     <div>
       <div className="space-y-2">
         <h1 className="text-2xl font-bold text-richblack-5 sm:text-3xl">
-          Hi {user?.firstName} 👋
+          Hi {firstName} 👋
         </h1>
         <p className="font-medium text-richblack-200">
           Let's start something new

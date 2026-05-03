@@ -8,7 +8,7 @@ import BannerImage3 from "../assets/Images/aboutus3.webp"
 import ContactFormSection from "../Component/Core/AboutPage/ContactFormSection"
 import LearningGrid from "../Component/Core/AboutPage/LearningGrid"
 import Quote from "../Component/Core/AboutPage/Quote"
-import StatsComponenet from "../Component/Core/AboutPage/Stats"
+import StatsComponent from "../Component/Core/AboutPage/Stats"
 import HighlightText from "../Component/Core/Homepage/HighlightText"
 import ReviewSlider from "../Component/common/ReviewSlider"
 import Footer from "../Component/common/Footer"
@@ -103,7 +103,7 @@ const About = () => {
         </div>
       </section>
 
-      <StatsComponenet />
+      <StatsComponent />
       <section className="mx-auto mt-12 flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-white sm:mt-16 md:mt-20">
         <LearningGrid />
         <ContactFormSection />

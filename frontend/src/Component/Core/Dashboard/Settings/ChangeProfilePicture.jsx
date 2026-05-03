@@ -9,6 +9,7 @@ export default function ChangeProfilePicture() {
   const { token } = useSelector((state) => state.auth)
   const { user } = useSelector((state) => state.profile)
   const dispatch = useDispatch()
+  const firstName = user?.firstName || user?.firstname || "user"
 
   const [loading, setLoading] = useState(false)
   const [imageFile, setImageFile] = useState(null)
@@ -67,7 +68,7 @@ export default function ChangeProfilePicture() {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-yellow-50 via-yellow-100 to-pink-400 blur-md opacity-25" />
               <img
                 src={previewSource || user?.image}
-                alt={`profile-${user?.firstName}`}
+                alt={`profile-${firstName}`}
                 className="relative aspect-square h-24 w-24 rounded-full border-4 border-richblack-700 object-cover shadow-[0_18px_60px_rgba(0,0,0,0.35)] sm:h-28 sm:w-28"
               />
             </div>

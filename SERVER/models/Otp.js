@@ -19,37 +19,26 @@ const otpSchema = new mongoose.Schema({
 
 
 async function sendVerificationEmail(email, otp) {
-    try {
-        const body = `
-            <h2>Email Verification</h2>
-            <p>Your OTP is:</p>
-            <h1>${otp}</h1>
-            <p>This OTP is valid for 5 minutes.</p>
-        `;
+    const body = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 600px; margin: 0 auto; padding: 24px;">
+            <h2 style="margin: 0 0 16px; color: #111827;">Email Verification</h2>
+            <p style="margin: 0 0 12px;">Your OTP is:</p>
+            <div style="margin: 16px 0; font-size: 32px; font-weight: 700; letter-spacing: 6px; color: #0f172a;">${otp}</div>
+            <p style="margin: 0;">This OTP is valid for 5 minutes.</p>
+        </div>
+    `;
 
-        const mailResponse = await mailSender(
-            email,
-            "Verification Email from StudyNotion",
-            body
-        );
+    const mailResponse = await mailSender(
+        email,
+        "Verification Email from StudyNotion",
+        body
+    );
 
-        console.log("✅ Email sent successfully", mailResponse);
-
-    } catch (error) {
-        console.error("❌ Email send failed:", error.message);
-        // Re-throw so pre-hook can decide to continue or fail
-        throw error;
-    }
+    console.log("? Email sent successfully", mailResponse);
 }
 
 otpSchema.pre("save", async function () {
-    try {
-        await sendVerificationEmail(this.email, this.otp);
-    } catch (error) {
-        console.error("⚠️ Email failed but OTP saved to DB. User can retry signup:", error.message);
-        // Do NOT rethrow - allow OTP to save even if mail fails
-    }
+    await sendVerificationEmail(this.email, this.otp);
 });
 
 module.exports = mongoose.model("OTP",otpSchema)
-

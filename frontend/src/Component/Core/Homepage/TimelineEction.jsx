@@ -58,7 +58,7 @@ const TimelineEction = () => {
           <div className="relative h-fit w-full max-w-[520px] shadow-blue-200 shadow-[0px_0px_30px_0px] lg:w-fit">
           <div className="absolute bottom-0 left-1/2 flex w-[92%] -translate-x-1/2 translate-y-[35%] flex-col gap-4 bg-caribbeangreen-700 py-4 text-white uppercase sm:w-[88%] sm:flex-row sm:gap-0 sm:py-5 lg:translate-y-[50%] lg:py-10 ">
             {/* Section 1 */}
-            <div className="flex items-center gap-4 border-caribbeangreen-300 px-5 sm:border-r sm:px-7 lg:px-14">
+            <div className="flex items-center  border-caribbeangreen-300 px-5 sm:border-r sm:px-7 lg:px-10">
               <h1 className="w-[60px] text-2xl font-bold sm:w-[75px] sm:text-3xl">10</h1>
               <h1 className="w-[70px] text-sm text-caribbeangreen-300 sm:w-[75px]">
                 Years experiences
@@ -66,7 +66,7 @@ const TimelineEction = () => {
             </div>
 
             {/* Section 2 */}
-            <div className="flex items-center gap-4 px-5 sm:px-7 lg:px-14">
+            <div className="flex items-center px-5 sm:px-7 lg:px-10">
               <h1 className="w-[60px] text-2xl font-bold sm:w-[75px] sm:text-3xl">250</h1>
               <h1 className="w-[70px] text-sm text-caribbeangreen-300 sm:w-[75px]">
                 types of courses
