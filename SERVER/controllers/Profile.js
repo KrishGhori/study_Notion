@@ -6,11 +6,11 @@ const {uploadImageToCloudinary} = require("../utils/imageUploader")
 exports.updateProfile = async (req,res) =>{
     try{
 
-    const {dateOfBirth="" , about="" , contectNumber , gender} = req.body ;
+    const {dateOfBirth="" , about="" , contactNumber , gender} = req.body ;
 
     const id = req.user.id ;
 
-    if(!contectNumber || !gender || !id ){
+    if(!contactNumber || !gender || !id ){
             return res.json({
                 success : false ,
                 message : "please feilds all the Require details"
@@ -47,7 +47,7 @@ exports.updateProfile = async (req,res) =>{
     profileDetails.dateOfBirth = dateOfBirth ;
     profileDetails.about = about ;
     profileDetails.gender = gender ;
-    profileDetails.contectNumber = contectNumber
+    profileDetails.contactNumber = contactNumber
     await profileDetails.save()
 
     return res.json({

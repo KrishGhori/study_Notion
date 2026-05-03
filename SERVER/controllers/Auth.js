@@ -71,7 +71,7 @@ exports.signUp = async (req,res)=>{
   try{
     console.log("Signup request body:", req.body);
     
-    const {firstname , lastname , email , password ,confirmPassword , accountType , contectNumber , otp} = req.body ;
+    const {firstname , lastname , email , password ,confirmPassword , accountType , contactNumber , otp} = req.body ;
     const normalizedEmail = email?.trim().toLowerCase();
 
     console.log("Extracted fields - firstname:", firstname, "lastname:", lastname, "email:", normalizedEmail, "accountType:", accountType);
@@ -153,7 +153,7 @@ exports.signUp = async (req,res)=>{
         gender : null ,
         dateOfBirth : null ,
         about : null ,
-        contectNumber : null ,
+        contactNumber : null ,
     })
 
     console.log("Creating user with accountType:", accountType);
@@ -161,7 +161,7 @@ exports.signUp = async (req,res)=>{
         firstname , 
         lastname , 
         email: normalizedEmail , 
-        contectNumber ,
+        contactNumber ,
         password : hashPassword ,
         additionalDetails : profileDetails._id , 
         accountType ,
