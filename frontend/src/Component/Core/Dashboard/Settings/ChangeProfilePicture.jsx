@@ -59,16 +59,31 @@ export default function ChangeProfilePicture() {
   }, [imageFile])
   return (
     <>
-      <div className="flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12 text-richblack-5">
-        <div className="flex items-center gap-x-4">
-          <img
-            src={previewSource || user?.image}
-            alt={`profile-${user?.firstName}`}
-            className="aspect-square w-[78px] rounded-full object-cover"
-          />
-          <div className="space-y-2">
-            <p>Change Profile Picture</p>
-            <div className="flex flex-row gap-3">
+      <div className="relative overflow-hidden rounded-[28px] border border-richblack-700 bg-gradient-to-br from-richblack-800 via-richblack-900 to-richblack-800 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.22)] sm:p-8">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-yellow-400/10 blur-3xl" />
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="relative mx-auto w-fit sm:mx-0">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-yellow-50 via-yellow-100 to-pink-400 blur-md opacity-25" />
+              <img
+                src={previewSource || user?.image}
+                alt={`profile-${user?.firstName}`}
+                className="relative aspect-square h-24 w-24 rounded-full border-4 border-richblack-700 object-cover shadow-[0_18px_60px_rgba(0,0,0,0.35)] sm:h-28 sm:w-28"
+              />
+            </div>
+
+            <div className="space-y-2 text-center sm:text-left">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-richblack-400">
+                Profile picture
+              </p>
+              <h2 className="text-lg font-semibold text-richblack-5 sm:text-xl">
+                Change your profile picture
+              </h2>
+              <p className="max-w-xl text-sm leading-6 text-richblack-300">
+                Upload a clear photo so your profile feels more personal and easy
+                to recognize across the dashboard.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 sm:justify-start">
               <input
                 type="file"
                 ref={fileInputRef}
@@ -77,20 +92,23 @@ export default function ChangeProfilePicture() {
                 accept="image/png, image/gif, image/jpeg"
               />
               <button
+                type="button"
                 onClick={handleClick}
                 disabled={loading}
-                className="cursor-pointer rounded-md bg-richblack-700 py-2 px-5 font-semibold text-richblack-50"
+                className="cursor-pointer rounded-full border border-richblack-600 bg-richblack-700 px-5 py-2.5 text-sm font-semibold text-richblack-50 transition hover:border-yellow-50/40 hover:bg-richblack-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Select
               </button>
               <IconBtn
                 text={loading ? "Uploading..." : "Upload"}
                 onclick={handleFileUpload}
+                customClasses="rounded-full"
               >
                 {!loading && (
                   <FiUpload className="text-lg text-richblack-900" />
                 )}
               </IconBtn>
+              </div>
             </div>
           </div>
         </div>

@@ -48,7 +48,15 @@ function openCheckout({ key, amount, userName, userEmail, description, onSuccess
 }
 
 
-export async function buyCourse(token, courses, userDetails, navigate, dispatch, courseList = []) {
+export async function buyCourse(
+    token,
+    courses,
+    userDetails,
+    navigate,
+    dispatch,
+    courseList = [],
+    cartTotal = 0
+) {
     const toastId = toast.loading("Loading...");
     try{
         const validCourses = (courses || []).filter((id) => isMongoObjectId(id));
@@ -73,10 +81,14 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch,
         }
 
         if(validCourses.length === 0) {
-            const demoAmount = Math.max(
-                1,
-                (courseList || []).reduce((acc, curr) => acc + Number(curr?.price || 0), 0)
-            );
+            const demoAmount = Number(cartTotal) > 0
+                ? Number(cartTotal)
+                : (courseList || []).reduce((acc, curr) => acc + Number(curr?.price || 0), 0);
+
+            if (demoAmount <= 0) {
+                toast.error("Add a course with a valid price to continue checkout");
+                return;
+            }
 
             openCheckout({
                 key: razorpayKey,

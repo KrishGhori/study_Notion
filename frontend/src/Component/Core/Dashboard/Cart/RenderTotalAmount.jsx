@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 
 import IconBtn from "../../../common/IconBtn"
-import { removeFromCart } from "../../../../slices/cartSlice"
 import { buyCourse } from "../../../../services/operations/studentFeaturesAPI"
 
 const isMongoObjectId = (value) => /^[a-f\d]{24}$/i.test(String(value || ""))
@@ -23,16 +22,6 @@ export default function RenderTotalAmount() {
     }
 
     const validCourses = cart.filter((course) => isMongoObjectId(course?._id))
-    const invalidCourses = cart.filter((course) => !isMongoObjectId(course?._id))
-
-    if (invalidCourses.length > 0) {
-      invalidCourses.forEach((course) => dispatch(removeFromCart(course._id)))
-      toast.error("Demo courses removed from cart. Add real courses to buy.")
-    }
-
-    if (validCourses.length === 0) {
-      return
-    }
 
     buyCourse(
       token,
@@ -40,7 +29,8 @@ export default function RenderTotalAmount() {
       user,
       navigate,
       dispatch,
-      validCourses
+      validCourses,
+      total
     )
   }
 

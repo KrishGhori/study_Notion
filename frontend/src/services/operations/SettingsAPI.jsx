@@ -44,7 +44,7 @@ export function updateDisplayPicture(token, formData) {
 }
 
 export function updateProfile(token, formData) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const toastId = toast.loading("Loading...");
     try {
       const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData, {
@@ -55,18 +55,56 @@ export function updateProfile(token, formData) {
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
-      const userImage = response.data.updatedUserDetails.image
-        ? response.data.updatedUserDetails.image
-        : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.updatedUserDetails.firstName} ${response.data.updatedUserDetails.lastName}`;
-      dispatch(
-        setUser({ ...response.data.updatedUserDetails, image: userImage })
-      );
+      const currentUser = getState()?.profile?.user || {};
+      const updatedUserDetails = response.data.userDetails || response.data.updatedUserDetails || {};
+      const profileDetails =
+        updatedUserDetails.additionalDetails || updatedUserDetails || {};
+      const nextUser = {
+        ...currentUser,
+        ...updatedUserDetails,
+        firstName:
+          updatedUserDetails.firstName ||
+          updatedUserDetails.firstname ||
+          formData.firstName ||
+          currentUser.firstName ||
+          currentUser.firstname,
+        lastName:
+          updatedUserDetails.lastName ||
+          updatedUserDetails.lastname ||
+          formData.lastName ||
+          currentUser.lastName ||
+          currentUser.lastname,
+        additionalDetails: {
+          ...(currentUser.additionalDetails || {}),
+          ...profileDetails,
+          dateOfBirth:
+            profileDetails.dateOfBirth ||
+            formData.dateOfBirth ||
+            currentUser.additionalDetails?.dateOfBirth,
+          about:
+            profileDetails.about ||
+            formData.about ||
+            currentUser.additionalDetails?.about,
+          gender:
+            profileDetails.gender ||
+            formData.gender ||
+            currentUser.additionalDetails?.gender,
+          contactNumber:
+            profileDetails.contactNumber ||
+            formData.contactNumber ||
+            currentUser.additionalDetails?.contactNumber,
+        },
+      };
+      dispatch(setUser(nextUser));
+      localStorage.setItem("user", JSON.stringify(nextUser));
       toast.success("Profile Updated Successfully");
       toast.dismiss(toastId);
       return true;
     } catch (error) {
       console.log("UPDATE_PROFILE_API API ERROR............", error);
-      toast.error("Could Not Update Profile");
+      const errorMessage =
+        error?.response?.data?.message || error?.message || "Could Not Update Profile";
+      toast.error(errorMessage);
       toast.dismiss(toastId);
       return false;
     }
