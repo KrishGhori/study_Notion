@@ -91,4 +91,30 @@ html,body {
         color: #000814;
         background-color: #F1F2FF;
     }
+
+    /* Full-screen loading spinner used across auth and pages */
+    .spinner {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 9999;
+    }
+
+    .spinner::after {
+        content: "";
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 6px solid rgba(241,242,255,0.12);
+        border-top-color: #FFD60A; /* yellow accent */
+        animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
 }
